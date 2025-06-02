@@ -1,7 +1,7 @@
 import * as Validations from "./validation/index.js";
 // the first one is the validate format that we will use for validating
 // second is for telling the code to either validate on params or not 
-export default function (validateFunc, params = false) {
+export default function (validateFunc, params = false, query = false) {
   // validate func provided from routes will be used here 
 
   // checking if the validate func pass exist or not
@@ -16,6 +16,10 @@ export default function (validateFunc, params = false) {
       if (params) {
         validated = await Validations[validateFunc].validateAsync(req.params);
         req.params = validated;
+      } else if (query) {
+        // this will validate the query
+        validated = await Validations[validateFunc].validateAsync(req.query);
+        req.query = validated;
       } else {
         validated = await Validations[validateFunc].validateAsync(req.body);
         req.body = validated;

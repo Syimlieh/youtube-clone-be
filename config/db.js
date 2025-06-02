@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import { logger } from "../log/logger.js";
+import Videos from "../models/video.model.js";
+import { VideoJson } from "../utils/seeding/video.seed.js";
 
 const connectDB = async () => {
   try {
@@ -21,6 +23,13 @@ const connectDB = async () => {
 
     logger.info("Connected to Database");
 
+    const checkVideo = await Videos.findOne({});
+    if (!checkVideo) {
+      const addExist = await Videos.insertMany(VideoJson)
+      if (addExist.length) {
+        logger.info("Videos seeded successfully")
+      }
+    }
   } catch (err) {
     logger.error("Failed to connect to Database:\n" + err);
     throw err;

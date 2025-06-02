@@ -11,5 +11,6 @@ export const COLLECTIONS = {
     PROFILE: 'profiles',
     FILE_METADATA: 'files_metadatas',
     VIDEOS: 'videos',
+    LIKES: 'likes',
     COMMENTS: 'comments'
 }
