@@ -1,7 +1,7 @@
 import { COLLECTIONS } from "../utils/constants.js";
 import mongoose from "mongoose";
 
-export const fetchCommentsPipeline = (query) => {
+export const fetchCommentsPipeline = (query, userId) => {
     const { videoId = "", parentCommentId = "" } = query;
 
     // this is similar to the find query in mongoose
@@ -47,14 +47,58 @@ export const fetchCommentsPipeline = (query) => {
         as: "replies"
     }
 
+    const $lookupReaction = {
+        from: COLLECTIONS.LIKES_COMMENTS,
+        localField: "_id",
+        foreignField: "commentId",
+        as: "reactions"
+    }
+
+    const $addFields = {
+        replyCount: { $size: "$replies" },
+        likes: {
+            $size: {
+                $filter: {
+                    input: "$reactions",
+                    as: "r",
+                    cond: { $eq: ["$$r.isLiked", true] }
+                }
+            }
+        },
+        dislikes: {
+            $size: {
+                $filter: {
+                    input: "$reactions",
+                    as: "r",
+                    cond: { $eq: ["$$r.isLiked", false] }
+                }
+            }
+        },
+    }
+
+    if (userId) {
+        const userObjectId = new mongoose.Types.ObjectId(userId);
+
+        $addFields.reactedByMe = {
+            $first: {
+                $filter: {
+                    input: "$reactions",
+                    as: "reaction",
+                    cond: { $eq: ["$$reaction.userId", userObjectId] }
+                }
+            },
+        };
+    }
+
     // returning all the stages
     return [
         { $match },
         { $lookup: $lookupUser },
         { $unwind: $unwindUser },
         { $lookup: $lookupReplies },
-        { $addFields: { replyCount: { $size: "$replies" } } },
-        { $project: { replies: 0 } },
+        { $lookup: $lookupReaction },
+        { $addFields },
+        { $project: { replies: 0, reactions: 0 } },
         { $sort: { createdAt: -1 } }
     ]
 }

@@ -28,14 +28,6 @@ const CommentSchema = new mongoose.Schema({
         trim: true,
         default: null
     },
-    likes: { // keeping like and dislike simple for now and not using a separate collection
-        type: Number,
-        default: 0
-    },
-    dislikes: {
-        type: Number,
-        default: 0
-    },
 }, {
     timestamps: true
 })

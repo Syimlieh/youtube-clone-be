@@ -1,6 +1,6 @@
 import express from "express";
 import validator from "../validations/validator.js";
-import { addNewComment, fetchCommentReplies, fetchComments } from "../controllers/comment.controller.js";
+import { addNewComment, fetchCommentReplies, fetchComments, updateComment } from "../controllers/comment.controller.js";
 import authMiddleware from "../middlewares/authentication.middleware.js";
 
 const router = express.Router();
@@ -11,5 +11,7 @@ router.post("/", authMiddleware, validator("validateVideoComment"), addNewCommen
 router.get("/replies/:id", validator("validateObjectId", true), fetchCommentReplies);
 
 router.get("/:id", validator("validateObjectId", true), fetchComments);
+
+router.put("/:id", validator("validateObjectId", true), validator("validateUpdateComment"), updateComment);
 
 export default router;

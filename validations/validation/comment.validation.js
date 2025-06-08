@@ -18,3 +18,12 @@ export const validateVideoComment = Joi.object({
             "any.requried": 'Comment is mandatory.',
         }),
 });
+
+export const validateUpdateComment = Joi.object({
+    comment: Joi.string()
+        .required()
+        .messages({
+            "string.empty": 'Comment is not allowed to be empty.',
+            "any.requried": 'Comment is mandatory.',
+        }),
+});

@@ -12,5 +12,6 @@ export const COLLECTIONS = {
     FILE_METADATA: 'files_metadatas',
     VIDEOS: 'videos',
     LIKES: 'likes',
+    LIKES_COMMENTS: 'likes_comments',
     COMMENTS: 'comments'
 }

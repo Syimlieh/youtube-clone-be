@@ -2,7 +2,7 @@ import { logger } from '../log/logger.js';
 import Videos from '../models/video.model.js';
 import { STATUS_MESSAGE } from '../utils/constants.js';
 import AppError from '../utils/errors/AppError.js';
-import Likes from '../models/like.model.js';
+import Likes from '../models/like.video.model.js';
 
 export const fetchAllVideos = async (query) => {
     try {
@@ -52,7 +52,7 @@ export const fetchVideo = async (query, userId) => {
             data: {
                 ...result,
                 likeCount,
-                like: likeInfo ? likeInfo.isLiked : false,
+                reactedByMe: likeInfo ? likeInfo.isLiked : null,
             },
         }
     } catch (error) {

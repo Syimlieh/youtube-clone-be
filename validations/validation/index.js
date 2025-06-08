@@ -2,9 +2,9 @@ import { validateSignup, validateSignin, validateObjectId } from './auth.validat
 
 import { validateFetchVideos } from './video.validation.js';
 
-import { validateVideoReaction } from './like.validation.js';
+import { validateVideoReaction, validateCommentReaction } from './like.validation.js';
 
-import { validateVideoComment } from './comment.validation.js';
+import { validateVideoComment, validateUpdateComment } from './comment.validation.js';
 
 export {
     validateSignup,
@@ -16,7 +16,9 @@ export {
 
     // like validation
     validateVideoReaction,
+    validateCommentReaction,
 
     // comment validation
-    validateVideoComment
+    validateVideoComment,
+    validateUpdateComment
 };

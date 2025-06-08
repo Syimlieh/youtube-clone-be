@@ -34,7 +34,7 @@ export const addNewComment = async (payload) => {
         }
         return {
             success: true,
-            statusCode: 200,
+            statusCode: 201,
             message: 'Comment added successfully.',
             data: saveComment,
         }
@@ -45,14 +45,66 @@ export const addNewComment = async (payload) => {
     }
 };
 
-export const fetchComments = async (query) => {
+export const fetchComments = async (query, userId) => {
     try {
-        const pipeline = fetchCommentsPipeline(query);
+        const pipeline = fetchCommentsPipeline(query, userId);
         const result = await Comments.aggregate(pipeline);
         return {
             success: true,
             statusCode: 200,
             message: 'Comments fetched successfully.',
+            data: result,
+        };
+    } catch (error) {
+        logger.error(`Failed while fetching Error => ${error.message}`)
+        if (error instanceof AppError) throw error;
+        throw new AppError(STATUS_MESSAGE[500], error, error.statusCode || 500)
+    }
+}
+
+export const fetchComment = async (query) => {
+    try {
+        const result = await Comments.findOne(query);
+        if (!result) {
+            return {
+                success: false,
+                statusCode: 404,
+                message: 'Comment not found.',
+                data: null,
+            };
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            message: 'Comment fetched successfully.',
+            data: result,
+        };
+    } catch (error) {
+        logger.error(`Failed while fetching Error => ${error.message}`)
+        if (error instanceof AppError) throw error;
+        throw new AppError(STATUS_MESSAGE[500], error, error.statusCode || 500)
+    }
+}
+
+export const updateComment = async (query, payload) => {
+    try {
+        const result = await Comments.findOneAndUpdate(
+            query,
+            { $set: payload },
+            { new: true } // new  here  will tell mongoose to return the updated document
+        );
+        if (!result) {
+            return {
+                success: false,
+                statusCode: 404,
+                message: 'Comment not found.',
+                data: null,
+            };
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            message: 'Comments updated successfully.',
             data: result,
         };
     } catch (error) {

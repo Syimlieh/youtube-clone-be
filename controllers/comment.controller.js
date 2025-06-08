@@ -24,7 +24,8 @@ export const addNewComment = async (req, res, next) => {
 export const fetchCommentReplies = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const result = await CommentService.fetchComments({ parentCommentId: id });
+        const { userId = "" } = req.query; // get userId from query for reaction as this api is open to all users
+        const result = await CommentService.fetchComments({ parentCommentId: id }, userId);
         return res.status(200).json(result);
     } catch (err) {
         next(err);
@@ -34,11 +35,27 @@ export const fetchCommentReplies = async (req, res, next) => {
 export const fetchComments = async (req, res, next) => {
     try {
         const { id } = req.params;
+        const { userId = "" } = req.query; // get userId from query for reaction as this api is open to all users
         const query = {
             videoId: id,
             parentCommentId: null // Fetching top-level comments only
         }
-        const result = await CommentService.fetchComments(query);
+        const result = await CommentService.fetchComments(query, userId);
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const updateComment = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const payload = req.body;
+        const query = {
+            _id: id,
+        };
+
+        const result = await CommentService.updateComment(query, payload);
         return res.status(200).json(result);
     } catch (err) {
         next(err);
