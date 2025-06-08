@@ -1,5 +1,6 @@
 import { logger } from '../log/logger.js';
 import Comments from '../models/comment.model.js';
+import { fetchCommentsPipeline } from '../pipelines/comment.pipeline.js';
 import { STATUS_MESSAGE } from '../utils/constants.js';
 import AppError from '../utils/errors/AppError.js';
 
@@ -46,7 +47,8 @@ export const addNewComment = async (payload) => {
 
 export const fetchComments = async (query) => {
     try {
-        const result = await Comments.find(query);
+        const pipeline = fetchCommentsPipeline(query);
+        const result = await Comments.aggregate(pipeline);
         return {
             success: true,
             statusCode: 200,

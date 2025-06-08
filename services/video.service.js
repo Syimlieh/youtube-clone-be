@@ -2,10 +2,18 @@ import { logger } from '../log/logger.js';
 import Videos from '../models/video.model.js';
 import { STATUS_MESSAGE } from '../utils/constants.js';
 import AppError from '../utils/errors/AppError.js';
+import Likes from '../models/like.model.js';
 
 export const fetchAllVideos = async (query) => {
     try {
-        const results = await Videos.find(query);
+        const mongoQuery = {};
+
+        if (query.category) {
+            mongoQuery.category = {
+                $regex: new RegExp(query.category, 'i')  // case-insensitive regex match
+            };
+        }
+        const results = await Videos.find(mongoQuery);
         return {
             success: true,
             statusCode: 200,
@@ -19,9 +27,9 @@ export const fetchAllVideos = async (query) => {
     }
 }
 
-export const fetchVideo = async (query) => {
+export const fetchVideo = async (query, userId) => {
     try {
-        const result = await Videos.findOne(query);
+        const result = await Videos.findOne(query).lean()
         if (!result) {
             return {
                 success: false,
@@ -30,11 +38,22 @@ export const fetchVideo = async (query) => {
                 data: null,
             }
         }
+
+        let likeInfo = null;
+        if (userId) {
+            likeInfo = await Likes.findOne({ videoId: result._id, userId });
+        }
+        const likeCount = await Likes.countDocuments({ videoId: result._id });
+
         return {
             success: true,
             statusCode: 200,
             message: 'Video fetch successfully.',
-            data: result,
+            data: {
+                ...result,
+                likeCount,
+                like: likeInfo ? likeInfo.isLiked : false,
+            },
         }
     } catch (error) {
         logger.error(`Failed while fetching Error => ${error.message}`)

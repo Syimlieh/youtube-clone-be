@@ -7,6 +7,6 @@ const router = express.Router();
 // first here is the routes, then we add a validation middleware and then go to our routes handler which is our controller
 router.get("/", validator("validateFetchVideos", false, true), fetchAllVideos);
 
-router.get("/:id", validator("validateObjectId", true), fetchVideo);
+router.get("/:id", fetchVideo);
 
 export default router;

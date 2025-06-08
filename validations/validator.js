@@ -17,9 +17,9 @@ export default function (validateFunc, params = false, query = false) {
         validated = await Validations[validateFunc].validateAsync(req.params);
         req.params = validated;
       } else if (query) {
-        // this will validate the query
-        validated = await Validations[validateFunc].validateAsync(req.query);
-        req.query = validated;
+        if (Object.keys(req.query).length > 0) {
+          await Validations[validateFunc].validateAsync(req.query);
+        }
       } else {
         validated = await Validations[validateFunc].validateAsync(req.body);
         req.body = validated;
