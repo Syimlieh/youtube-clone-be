@@ -88,6 +88,8 @@ export const fetchCommentsPipeline = (query, userId) => {
                 }
             },
         };
+
+        $addFields.myComment = { $eq: ["$userId", userObjectId] };
     }
 
     // returning all the stages

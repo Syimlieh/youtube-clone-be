@@ -97,7 +97,7 @@ export const updateComment = async (query, payload) => {
             return {
                 success: false,
                 statusCode: 404,
-                message: 'Comment not found.',
+                message: 'Comment not found or unauthorized to update this comment.',
                 data: null,
             };
         }
@@ -108,7 +108,32 @@ export const updateComment = async (query, payload) => {
             data: result,
         };
     } catch (error) {
-        logger.error(`Failed while fetching Error => ${error.message}`)
+        logger.error(`Failed while updating Error => ${error.message}`)
+        if (error instanceof AppError) throw error;
+        throw new AppError(STATUS_MESSAGE[500], error, error.statusCode || 500)
+    }
+}
+
+
+export const deleteComment = async (query) => {
+    try {
+        const result = await Comments.findOneAndDelete(query);
+        if (!result) {
+            return {
+                success: false,
+                statusCode: 404,
+                message: 'Comment not found or unauthorized to delete this comment.',
+                data: null,
+            };
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            message: 'Comments deleted successfully.',
+            data: result,
+        };
+    } catch (error) {
+        logger.error(`Failed while deleting Error => ${error.message}`)
         if (error instanceof AppError) throw error;
         throw new AppError(STATUS_MESSAGE[500], error, error.statusCode || 500)
     }

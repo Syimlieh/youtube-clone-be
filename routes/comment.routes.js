@@ -1,6 +1,6 @@
 import express from "express";
 import validator from "../validations/validator.js";
-import { addNewComment, fetchCommentReplies, fetchComments, updateComment } from "../controllers/comment.controller.js";
+import { addNewComment, deleteComment, fetchCommentReplies, fetchComments, updateComment } from "../controllers/comment.controller.js";
 import authMiddleware from "../middlewares/authentication.middleware.js";
 
 const router = express.Router();
@@ -12,6 +12,8 @@ router.get("/replies/:id", validator("validateObjectId", true), fetchCommentRepl
 
 router.get("/:id", validator("validateObjectId", true), fetchComments);
 
-router.put("/:id", validator("validateObjectId", true), validator("validateUpdateComment"), updateComment);
+router.put("/:id", authMiddleware, validator("validateObjectId", true), validator("validateUpdateComment"), updateComment);
+
+router.delete("/:id", authMiddleware, validator("validateObjectId", true), deleteComment);
 
 export default router;

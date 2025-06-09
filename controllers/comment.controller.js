@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import * as CommentService from "../services/comment.service.js";
 import * as VideoService from "../services/video.service.js";
 
@@ -50,12 +51,30 @@ export const fetchComments = async (req, res, next) => {
 export const updateComment = async (req, res, next) => {
     try {
         const { id } = req.params;
+        const user = req.user;
         const payload = req.body;
         const query = {
             _id: id,
+            userId: user._id,
         };
 
         const result = await CommentService.updateComment(query, payload);
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const deleteComment = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const user = req.user;
+        const query = {
+            _id: id,
+            userId: user._id,
+        };
+
+        const result = await CommentService.deleteComment(query);
         return res.status(200).json(result);
     } catch (err) {
         next(err);
