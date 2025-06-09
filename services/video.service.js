@@ -43,7 +43,7 @@ export const fetchVideo = async (query, userId) => {
         if (userId) {
             likeInfo = await Likes.findOne({ videoId: result._id, userId });
         }
-        const likeCount = await Likes.countDocuments({ videoId: result._id });
+        const likeCount = await Likes.countDocuments({ videoId: result._id, isLiked: true });
 
         return {
             success: true,
@@ -52,7 +52,7 @@ export const fetchVideo = async (query, userId) => {
             data: {
                 ...result,
                 likeCount,
-                reactedByMe: likeInfo ? likeInfo.isLiked : null,
+                reactedByMe: likeInfo,
             },
         }
     } catch (error) {

@@ -21,6 +21,18 @@ export const handleVideoReaction = async (req, res, next) => {
     }
 };
 
+export const deleteVideoReaction = async (req, res, next) => {
+    try {
+        // i am destructuring id from params
+        const { id } = req.params;
+
+        const result = await LikeService.deleteVideoReaction({ _id: id });
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
 export const handleCommentReaction = async (req, res, next) => {
     try {
         // i am destructuring the body to get commentID and isLiked
@@ -34,6 +46,18 @@ export const handleCommentReaction = async (req, res, next) => {
         }
         const result = await LikeService.likeOrDislikeComment({ commentId, userId: _id, isLiked });
 
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const deleteCommentReaction = async (req, res, next) => {
+    try {
+        // i am destructuring the id
+        const { id } = req.params;
+
+        const result = await LikeService.deleteCommentReaction({ _id: id });
         return res.status(200).json(result);
     } catch (err) {
         next(err);

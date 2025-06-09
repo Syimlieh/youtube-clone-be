@@ -37,6 +37,30 @@ export const likeOrDislikeVideo = async ({ videoId, userId, isLiked }) => {
     }
 };
 
+export const deleteVideoReaction = async (query) => {
+    try {
+        const result = await Likes.findOneAndDelete(query);
+        if (!result) {
+            return {
+                success: false,
+                statusCode: 404,
+                message: 'No reaction found.',
+                data: result,
+            }
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            message: 'Video reaction removed successfully.',
+            data: result,
+        }
+    } catch (error) {
+        logger.error(`Failed while removing reaction => ${error.message}`)
+        if (error instanceof AppError) throw error;
+        throw new AppError(STATUS_MESSAGE[500], error, error.statusCode || 500)
+    }
+};
+
 export const likeOrDislikeComment = async ({ commentId, userId, isLiked }) => {
     try {
         // first we will check if a reaction already exists
@@ -65,6 +89,30 @@ export const likeOrDislikeComment = async ({ commentId, userId, isLiked }) => {
         }
     } catch (error) {
         logger.error(`Failed while adding reaction => ${error.message}`)
+        if (error instanceof AppError) throw error;
+        throw new AppError(STATUS_MESSAGE[500], error, error.statusCode || 500)
+    }
+};
+
+export const deleteCommentReaction = async (query) => {
+    try {
+        const result = await LikesComment.findOneAndDelete(query);
+        if (!result) {
+            return {
+                success: false,
+                statusCode: 404,
+                message: 'No reaction found.',
+                data: result,
+            }
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            message: 'Video reaction removed successfully.',
+            data: result,
+        }
+    } catch (error) {
+        logger.error(`Failed while removing reaction => ${error.message}`)
         if (error instanceof AppError) throw error;
         throw new AppError(STATUS_MESSAGE[500], error, error.statusCode || 500)
     }
