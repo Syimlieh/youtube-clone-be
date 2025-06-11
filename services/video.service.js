@@ -7,10 +7,16 @@ import Likes from '../models/like.video.model.js';
 export const fetchAllVideos = async (query) => {
     try {
         const mongoQuery = {};
-
-        if (query.category) {
+        const { category = "", title = "" } = query;
+        if (category) {
             mongoQuery.category = {
                 $regex: new RegExp(query.category, 'i')  // case-insensitive regex match
+            };
+        }
+
+        if (title) {
+            mongoQuery.title = {
+                $regex: new RegExp(query.title, 'i')  // case-insensitive regex match
             };
         }
         const results = await Videos.find(mongoQuery);
