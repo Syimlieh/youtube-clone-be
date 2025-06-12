@@ -1,4 +1,4 @@
-Description: This is a Youtube clone project built with Node.js, Express, Mongodb with mongoose and Joi for input validation. It supports fetching authentication, adding, fetching videos and adding comments.
+Description: This is a Youtube clone project built with Node.js, Express, Mongodb with mongoose and Joi for input validation. It supports fetching authentication, fetching videos, adding comments, reaction for videos and comments, View my channel and other channel with same fetc videos displayed as channel videos.
 
 Make sure that node.js and mongo is installed in local system
 Setup:
@@ -8,14 +8,3 @@ Setup:
 
 
 API Base URL: http://localhost:4000
-
-
-Available Endpoints
-    Auth
-    POST /signup - Signup new user and add to db
-
-    POST /login  - Login new user and generate token on successfull login
-
-    POST /me  - Will get the user detail based on token
-
-    
