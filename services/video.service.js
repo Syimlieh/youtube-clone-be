@@ -67,3 +67,73 @@ export const fetchVideo = async (query, userId) => {
         throw new AppError(STATUS_MESSAGE[500], error, error.statusCode || 500)
     }
 }
+
+export const createVideo = async (payload) => {
+    try {
+        const result = await Videos.create(payload);
+        return {
+            success: true,
+            statusCode: 201,
+            message: 'Video added successfully.',
+            data: result
+        }
+    } catch (error) {
+        logger.error(`Failed while adding Error => ${error.message}`)
+        if (error instanceof AppError) throw error;
+        throw new AppError(STATUS_MESSAGE[500], error, error.statusCode || 500)
+    }
+}
+
+export const updateVideo = async (query, payload) => {
+    try {
+        const result = await Videos.findOneAndUpdate(
+            query,
+            { $set: payload },
+            { new: true }
+        );
+        if (!result) {
+            return {
+                success: false,
+                statusCode: 404,
+                message: 'Failed to delete video. Not found.',
+                data: null,
+            }
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            message: 'Video updated successfully.',
+            data: result
+        }
+    } catch (error) {
+        logger.error(`Failed while update Error => ${error.message}`)
+        if (error instanceof AppError) throw error;
+        throw new AppError(STATUS_MESSAGE[500], error, error.statusCode || 500)
+    }
+}
+
+export const deleteVideo = async (query) => {
+    try {
+        const result = await Videos.findOneAndDelete(
+            query,
+        );
+        if (!result) {
+            return {
+                success: false,
+                statusCode: 404,
+                message: 'Failed to delete video. Not found.',
+                data: null,
+            }
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            message: 'Video deleted successfully.',
+            data: result
+        }
+    } catch (error) {
+        logger.error(`Failed while update Error => ${error.message}`)
+        if (error instanceof AppError) throw error;
+        throw new AppError(STATUS_MESSAGE[500], error, error.statusCode || 500)
+    }
+}
