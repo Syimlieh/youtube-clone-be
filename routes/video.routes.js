@@ -11,7 +11,7 @@ router.post("/", validator("videoValidationSchema"), addVideo);
 
 router.put("/:id", validator("validateUpdateVideoSchema"), validator("validateObjectId", true), updateVideo);
 
-router.get("/:id", validator("validateObjectId", true), fetchVideo);
+router.get("/:id", fetchVideo);
 
 router.delete("/:id", validator("validateObjectId", true), deleteVideo);
 
